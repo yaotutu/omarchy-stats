@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "id": "omarchy-stats",
+  "name": "Omarchy Stats",
+  "version": "1.0.1",
+  "author": "yaotutu",
+  "license": "MIT",
+  "description": "Theme-aware native system statistics panel with a live CPU, memory, and download summary",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "src/BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Omarchy Stats",
+    "description": "Live CPU, memory and download summary with a native detailed system monitor panel",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "refreshSeconds": 1,
+      "barWidth": 150,
+      "detailRefreshSeconds": 1,
+      "netInterface": ""
+    },
+    "schema": [
+      {
+        "key": "refreshSeconds",
+        "type": "integer",
+        "label": "Bar refresh interval (seconds)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "defaultValue": 1
+      },
+      {
+        "key": "barWidth",
+        "type": "integer",
+        "label": "Fixed bar width",
+        "min": 132,
+        "max": 220,
+        "step": 1,
+        "defaultValue": 150
+      },
+      {
+        "key": "detailRefreshSeconds",
+        "type": "integer",
+        "label": "Panel refresh interval (seconds)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "defaultValue": 1
+      },
+      {
+        "key": "netInterface",
+        "type": "string",
+        "label": "Bar network interface (empty = all active)"
+      }
+    ]
+  }
+}
