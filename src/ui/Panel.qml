@@ -22,6 +22,7 @@ Panel {
   readonly property color dim: Color.muted
   readonly property string fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
   readonly property int detailInterval: Math.max(1, Math.min(10, Number(setting("detailRefreshSeconds", 1)) || 1))
+  readonly property int maxCollectorLineLength: 1048576
   readonly property string collectorPath: Qt.resolvedUrl("../collector.py").toString().replace(/^file:\/\//, "")
 
   property var snapshot: null
@@ -52,7 +53,12 @@ Panel {
   }
 
   function ingest(line) {
-    var value = String(line || "").trim()
+    var raw = String(line || "")
+    if (raw.length > root.maxCollectorLineLength) {
+      root.actionError = "Collector output exceeded the safe size limit"
+      return
+    }
+    var value = raw.trim()
     if (!value) return
     try {
       var next = JSON.parse(value)
@@ -96,8 +102,13 @@ Panel {
     running: false
     stdout: SplitParser {
       onRead: function(line) {
+        var value = String(line || "")
+        if (value.length > 65536) {
+          root.actionError = "Process action output exceeded the safe size limit"
+          return
+        }
         try {
-          var result = JSON.parse(String(line))
+          var result = JSON.parse(value)
           root.actionError = result.ok ? "Action completed" : String(result.error || "Action failed")
         } catch (error) {
           root.actionError = "Process action returned invalid data"

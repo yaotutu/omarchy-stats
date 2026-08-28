@@ -14,6 +14,7 @@ BarWidget {
   property real downloadRate: NaN
   readonly property int refreshInterval: Math.max(1, Math.min(10, Number(setting("refreshSeconds", 1)) || 1))
   readonly property int summaryWidth: Math.max(132, Math.min(220, Number(setting("barWidth", 150)) || 150))
+  readonly property int maxCollectorLineLength: 65536
   readonly property string collectorPath: Qt.resolvedUrl("collector.py").toString().replace(/^file:\/\//, "")
   readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
   readonly property bool popoutSwitchClosing: panelLoader.item ? panelLoader.item.popoutSwitchClosing === true : false
@@ -46,8 +47,15 @@ BarWidget {
     ]
     stdout: SplitParser {
       onRead: function(line) {
+        var value = String(line || "")
+        if (value.length > root.maxCollectorLineLength) {
+          root.cpuPercent = NaN
+          root.memoryPercent = NaN
+          root.downloadRate = NaN
+          return
+        }
         try {
-          var data = JSON.parse(String(line))
+          var data = JSON.parse(value)
           root.cpuPercent = Number(data.cpuPercent)
           root.memoryPercent = Number(data.memoryPercent)
           root.downloadRate = Number(data.downloadBytesPerSecond)

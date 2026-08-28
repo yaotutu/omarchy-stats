@@ -6,12 +6,29 @@ import os
 from collections.abc import Iterable
 from pathlib import Path
 
+MAX_TEXT_BYTES = 1024 * 1024
 
-def read_text(path: str | Path, default: str = "") -> str:
+
+def read_text(
+    path: str | Path,
+    default: str = "",
+    *,
+    max_bytes: int = MAX_TEXT_BYTES,
+    truncate: bool = False,
+) -> str:
+    """Read at most ``max_bytes`` from a procfs, sysfs, or small text file."""
+    if max_bytes < 1:
+        return default
     try:
-        return Path(path).read_text(encoding="utf-8", errors="replace")
+        with Path(path).open("rb") as handle:
+            data = handle.read(max_bytes + 1)
     except (OSError, ValueError):
         return default
+    if len(data) > max_bytes:
+        if not truncate:
+            return default
+        data = data[:max_bytes]
+    return data.decode("utf-8", errors="replace")
 
 
 def read_int(path: str | Path) -> int | None:

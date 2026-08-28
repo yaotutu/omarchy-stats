@@ -9,6 +9,8 @@ import time
 
 from .processes import send_signal
 
+MAX_JSON_BYTES = 1024 * 1024
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -52,10 +54,34 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _encode_bounded(payload: dict) -> str | None:
+    parts: list[str] = []
+    size = 0
+    encoder = json.JSONEncoder(separators=(",", ":"), ensure_ascii=False)
+    for part in encoder.iterencode(payload):
+        size += len(part.encode("utf-8"))
+        if size > MAX_JSON_BYTES:
+            return None
+        parts.append(part)
+    return "".join(parts)
+
+
 def emit(payload: dict) -> None:
-    sys.stdout.write(
-        json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + "\n"
-    )
+    encoded = _encode_bounded(payload)
+    if encoded is None:
+        encoded = json.dumps(
+            {
+                "schema": 1,
+                "errors": [
+                    {
+                        "provider": "collector",
+                        "message": "Snapshot exceeded the safe output limit",
+                    }
+                ],
+            },
+            separators=(",", ":"),
+        )
+    sys.stdout.write(encoded + "\n")
     sys.stdout.flush()
 
 

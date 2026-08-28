@@ -1,8 +1,13 @@
+import io
 import json
 import subprocess
 import sys
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
+
+from src.omarchy_stats import cli
 
 ROOT = Path(__file__).resolve().parents[1]
 COLLECTOR = ROOT / "src" / "collector.py"
@@ -42,6 +47,22 @@ class CliTests(unittest.TestCase):
             self.assertIn(key, value)
         self.assertIn("interfaces", value["network"])
         self.assertIn("items", value["processes"])
+
+    def test_large_payload_is_replaced_with_bounded_error(self):
+        output = io.StringIO()
+        with (
+            patch.object(cli, "MAX_JSON_BYTES", 256),
+            redirect_stdout(output),
+        ):
+            cli.emit({"value": "x" * 512})
+        value = json.loads(output.getvalue())
+        self.assertEqual(value["errors"][0]["provider"], "collector")
+        self.assertLessEqual(len(output.getvalue().encode("utf-8")), 256)
+
+    def test_normal_payload_stays_within_output_limit(self):
+        encoded = cli._encode_bounded({"schema": 1, "value": "ok"})
+        self.assertIsNotNone(encoded)
+        self.assertLessEqual(len(encoded.encode("utf-8")), cli.MAX_JSON_BYTES)
 
     def test_summary_emits_only_lightweight_fields(self):
         process = subprocess.Popen(

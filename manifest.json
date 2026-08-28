@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "omarchy-stats",
   "name": "Omarchy Stats",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "yaotutu",
   "license": "MIT",
   "description": "Theme-aware native system statistics panel with a live CPU, memory, and download summary",

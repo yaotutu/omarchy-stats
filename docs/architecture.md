@@ -65,6 +65,10 @@ The UI confirms every action and requires a second confirmation for `KILL`.
 ## Failure model
 
 - Missing files and transient `/proc` races become unavailable values.
+- procfs and sysfs reads have a hard byte limit; oversized values become unavailable,
+  while process command lines are safely truncated.
+- The collector caps each JSON line before writing it, and QML rejects oversized
+  values before parsing them.
 - Optional GPU tools are never required for plugin startup.
 - Invalid collector output is surfaced as a panel status message.
 - A failed process action reports an error and does not terminate the panel.

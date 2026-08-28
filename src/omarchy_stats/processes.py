@@ -117,7 +117,11 @@ class ProcessSampler:
                     )
             rss = _rss(pid)
             uid = _uid(pid)
-            command = read_text(entry / "cmdline").replace("\0", " ").strip()
+            command = (
+                read_text(entry / "cmdline", max_bytes=4096, truncate=True)
+                .replace("\0", " ")
+                .strip()
+            )
             rows.append(
                 {
                     "pid": pid,
