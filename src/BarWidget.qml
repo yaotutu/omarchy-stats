@@ -13,16 +13,6 @@ BarWidget {
   property real memoryPercent: NaN
   property real downloadRate: NaN
   readonly property int refreshInterval: Math.max(1, Math.min(10, Number(setting("refreshSeconds", 1)) || 1))
-  readonly property int summaryWidth: Math.max(120, Math.min(220, Number(setting("barWidth", 120)) || 120))
-  readonly property real maxSummaryWidth: (
-    cpuIcon.implicitWidth
-    + memoryIcon.implicitWidth
-    + downloadIcon.implicitWidth
-    + percentMetrics.width * 2
-    + rateMetrics.width
-    + Style.spaceReal(2.5) * 3
-    + Style.spaceReal(5) * 2
-  )
   readonly property int maxCollectorLineLength: 65536
   readonly property string collectorPath: Qt.resolvedUrl("collector.py").toString().replace(/^file:\/\//, "")
   readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
@@ -77,20 +67,6 @@ BarWidget {
     }
   }
 
-  TextMetrics {
-    id: percentMetrics
-    font.family: button.fontFamily
-    font.pixelSize: button.fontSize
-    text: "100%"
-  }
-
-  TextMetrics {
-    id: rateMetrics
-    font.family: button.fontFamily
-    font.pixelSize: button.fontSize
-    text: "1023K/s"
-  }
-
   Loader {
     id: panelLoader
     active: true
@@ -103,8 +79,8 @@ BarWidget {
     id: button
     anchors.fill: parent
     bar: root.bar
-    // Keep the slot stable while reserving enough room for worst-case values.
-    fixedWidth: root.vertical ? root.barSize : Math.max(Style.space(root.summaryWidth), root.maxSummaryWidth)
+    // Size the widget to the content so the bar does not reserve empty space.
+    fixedWidth: root.vertical ? root.barSize : summaryContent.implicitWidth
     horizontalMargin: 0
     text: ""
     labelVisible: false
@@ -115,6 +91,7 @@ BarWidget {
     }
 
     Row {
+      id: summaryContent
       anchors.centerIn: parent
       spacing: Style.spaceReal(5)
 
@@ -122,7 +99,6 @@ BarWidget {
         spacing: Style.spaceReal(2.5)
 
         Text {
-          id: cpuIcon
           text: "󰍛"
           color: button.foreground
           font.family: button.fontFamily
@@ -143,7 +119,6 @@ BarWidget {
         spacing: Style.spaceReal(2.5)
 
         Text {
-          id: memoryIcon
           text: ""
           color: button.foreground
           font.family: button.fontFamily
@@ -164,7 +139,6 @@ BarWidget {
         spacing: Style.spaceReal(2.5)
 
         Text {
-          id: downloadIcon
           text: "↓"
           color: button.foreground
           font.family: button.fontFamily
