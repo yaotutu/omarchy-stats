@@ -73,7 +73,7 @@ Settings can be changed with `omarchy bar set`:
 | Setting | Description | Default | Range |
 |---|---|---:|---:|
 | `refreshSeconds` | Bar refresh interval in seconds | `1` | `1–10` |
-| `barWidth` | Fixed width of the bar widget | `150` | `132–220` |
+| `barWidth` | Fixed width of the bar widget | `120` | `120–220` |
 | `detailRefreshSeconds` | Details panel refresh interval in seconds | `1` | `1–10` |
 | `netInterface` | Network interface used by the bar; empty uses all active interfaces | empty | — |
 

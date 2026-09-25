@@ -13,7 +13,7 @@ BarWidget {
   property real memoryPercent: NaN
   property real downloadRate: NaN
   readonly property int refreshInterval: Math.max(1, Math.min(10, Number(setting("refreshSeconds", 1)) || 1))
-  readonly property int summaryWidth: Math.max(132, Math.min(220, Number(setting("barWidth", 150)) || 150))
+  readonly property int summaryWidth: Math.max(120, Math.min(220, Number(setting("barWidth", 120)) || 120))
   readonly property int maxCollectorLineLength: 65536
   readonly property string collectorPath: Qt.resolvedUrl("collector.py").toString().replace(/^file:\/\//, "")
   readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
@@ -98,7 +98,7 @@ BarWidget {
         spacing: Style.spaceReal(2.5)
 
         Text {
-          text: "󰻠"
+          text: "󰍛"
           color: button.foreground
           font.family: button.fontFamily
           font.pixelSize: button.fontSize

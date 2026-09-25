@@ -34,8 +34,7 @@ function compactRate(value) {
     number /= 1024
     unit += 1
   }
-  var digits = number >= 10 || unit === 0 ? 0 : 1
-  return number.toFixed(digits) + labels[unit] + "/s"
+  return Math.round(number) + labels[unit] + "/s"
 }
 
 function frequency(mhz) {
