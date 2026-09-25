@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "omarchy-stats",
   "name": "Omarchy Stats",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "yaotutu",
   "license": "MIT",
   "description": "Theme-aware native system statistics panel with a live CPU, memory, and download summary",
@@ -37,7 +37,7 @@
       {
         "key": "barWidth",
         "type": "integer",
-        "label": "Fixed bar width",
+        "label": "Minimum fixed bar width",
         "min": 120,
         "max": 220,
         "step": 1,

@@ -73,9 +73,11 @@ Settings can be changed with `omarchy bar set`:
 | Setting | Description | Default | Range |
 |---|---|---:|---:|
 | `refreshSeconds` | Bar refresh interval in seconds | `1` | `1–10` |
-| `barWidth` | Fixed width of the bar widget | `120` | `120–220` |
+| `barWidth` | Minimum fixed width of the bar widget | `120` | `120–220` |
 | `detailRefreshSeconds` | Details panel refresh interval in seconds | `1` | `1–10` |
 | `netInterface` | Network interface used by the bar; empty uses all active interfaces | empty | — |
+
+The widget automatically reserves enough stable space for worst-case values such as `100%` and `1023K/s`, so the rendered width may be slightly larger than the configured minimum.
 
 Examples:
 
